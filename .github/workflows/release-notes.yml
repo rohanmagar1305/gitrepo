@@ -1,0 +1,36 @@
+name: Generate Release Notes
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  generate-release-notes:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate Release Notes
+      run: npm run generate-release-notes
+
+    - name: Commit and Push Release Notes
+      run: |
+        git add RELEASE_NOTES.md
+        git commit -m "Add release notes for ${{ github.ref_name }}"
+        git push origin ${{ github.ref_name }}
